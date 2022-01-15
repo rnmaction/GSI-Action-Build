@@ -75,19 +75,18 @@ jobs:
              pwd
              mkdir -p upload
              zip -r "${{ steps.config.outputs.repack_name }}" ./SGSI/*
-             if [[ $(du -sb ""${{ steps.config.outputs.repack_name }}"" | awk '{print $1}') -gt 2097152000 ]];then
+             if [[ $(du -sb ""${{ github.event.inputs.ZIP_NAME }}"" | awk '{print $1}') -gt 2097152000 ]];then
                  echo -e "split packaging..."
-                 tar -cpzf - "${{ steps.config.outputs.repack_name }}" | split -d -b 1024m - "upload/"${{ steps.config.outputs.repack_name }}"
+                 tar -cpzf - "${{ github.event.inputs.ZIP_NAME }}" | split -d -b 1024m - "upload/"${{ github.event.inputs.ZIP_NAME }}"
              else
-                 mv "${{ steps.config.outputs.repack_name }}" upload/"${{ steps.config.outputs.repack_name }}"
+                 mv "${{ github.event.inputs.ZIP_NAME }}" upload/"${{ github.event.inputs.ZIP_NAME }}"
              fi
              ls "upload"
-             
-     - name: Upload SGSI to GH-Release
-       uses: ncipollo/release-action@v1.8.6
-       with:
-         artifacts: ${{ github.workspace }}/SGSI-build-tool/upload/*
-         name: "${{ steps.config.outputs.os_type }}"${{ steps.config.outputs.build_type }}"-Android"${{ steps.config.outputs.version }}"-unpack
-         tag: "${{ steps.config.outputs.os_type }}"${{ steps.config.outputs.build_type }}"-"${{ steps.config.outputs.version }}"-${{ github.run_number }}
-         bodyFile: "${{ github.workspace}}/SGSI-build-tool/SGSI/build_info.txt"
-         token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to Release‌‌...
+        uses: ncipollo/release-action@v1.8.0
+        with:
+          artifacts: "${{ github.workspace }}/Tool-SGSI-build/upload/*"
+          tag: "${{ github.event.inputs.REPACK_NAME }}_${{ env.BUILD_TIME }}"
+          bodyFile: "${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt"
+          token: ${{ secrets.GITHUB_TOKEN }}
