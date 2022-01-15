@@ -71,7 +71,7 @@ jobs:
 
       - name: Repack Output File
         run: |            
-             cd $GITHUB_WORKSPACE/SGSI-build-tool
+             cd $GITHUB_WORKSPACE/Tool-SGSI-build
              pwd
              mkdir -p upload
              zip -r "${{ steps.config.outputs.repack_name }}" ./SGSI/*
